@@ -14,7 +14,7 @@ Imports System.Windows.Forms
 
 'This class contains this program's main interface window's procedures.
 Public Class InterfaceWindow
-   Private Const TO_RADIANS As Single = 180 / PI   'Defines the value used to convert degrees to radians.
+   Private Const DEGREES_PER_RADIAN As Double = 180 / PI   'Defines the number of degrees per radian.
 
    Private ColorDialogO As New ColorDialog With {.Color = Color.White}   'Contains the color dialog.
    Private ToolTipO As New ToolTip   'Defines this window's tooltip.
@@ -43,7 +43,7 @@ Public Class InterfaceWindow
          Dim xy As New List(Of PointF)
 
          For Degree As Integer = 0 To 360 Step CInt(360 / Corners)
-            xy.Add(New PointF(CSng(Sin((Degree + Angle) / TO_RADIANS) * Radii(Radian)) + x, CSng(Cos((Degree + Angle) / TO_RADIANS) * Radii(Radian)) + y))
+            xy.Add(New PointF(CSng(Sin((Degree + Angle) / DEGREES_PER_RADIAN) * Radii(Radian)) + x, CSng(Cos((Degree + Angle) / DEGREES_PER_RADIAN) * Radii(Radian)) + y))
             If Radian = Radii.GetUpperBound(0) Then Radian = Radii.GetLowerBound(0) Else Radian += 1
          Next Degree
 
@@ -86,15 +86,15 @@ Public Class InterfaceWindow
          Static Radii As String = "100;50"
 
          Angle = InputBox("Angle:",, Angle)
-         If Angle = Nothing Then Exit Sub
-
-         Corners = InputBox("Number of corners:",, Corners)
-         If Corners = Nothing Then Exit Sub
-
-         Radii = InputBox("Radii:",, Radii)
-         If Radii = Nothing Then Exit Sub
-
-         Me.CreateGraphics.FillPolygon(New SolidBrush(ColorDialogO.Color), GenerateShape(Integer.Parse(Corners), e.X, e.Y, Integer.Parse(Angle), (From Radius In Radii.Split(";"c) Select Integer.Parse(Radius)).ToArray()))
+         If Not Angle = Nothing Then
+            Corners = InputBox("Number of corners:",, Corners)
+            If Not Corners = Nothing Then
+               Radii = InputBox("Radii:",, Radii)
+               If Not Radii = Nothing Then
+                  Me.CreateGraphics.FillPolygon(New SolidBrush(ColorDialogO.Color), GenerateShape(Integer.Parse(Corners), e.X, e.Y, Integer.Parse(Angle), (From Radius In Radii.Split(";"c) Select Integer.Parse(Radius)).ToArray()))
+               End If
+            End If
+         End If
       Catch ExceptionO As Exception
          HandleError(ExceptionO)
       End Try
